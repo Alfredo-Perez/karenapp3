@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\.android\build-cache\6fca05c9959f49cd79b633b3fcff89c3f2b62761\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="c4f45092eee6cdf1a5dbd597b2b6819be652ce2e">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_de9095564af943121708f4cb63ae6f72ee2d64fb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="1564eb2f187ae63c7b2e9eeb6c7e0d9aafb77fde">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_2d450db2d84b66ba050ab2a14ef7fc433686a15d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\.android\build-cache\48d3a8062c9ef7ce95ea4b3e0badd105d111b8c4\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="6a022bf00ccd0948a8180c505e8e458bbddd43a6">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_1721f1277f15ee1b8c36f4b561701e76f4bb30dd\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-math3\3.6.1\e4ba98f1d4b3c80ec46392f25e094a6a2e58fcbf\commons-math3-3.6.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="e4ba98f1d4b3c80ec46392f25e094a6a2e58fcbf">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\commons-math3-3.6.1_d2b18eb07092925f5abf6bd753de89f4632270b8\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_7ef0caf38eb5632043defd95fa1b97085d1f099a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\anama\.android\build-cache\9abba7beaf9f528c769c78b2b7cd2730ebe2373f\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="cddcd0fb93bc70e27325f2f715b2710332004ebb">
+        <dex dex="C:\Users\anama\Desktop\KarenApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_78c6f85101e8048970372aecb3dd6ccc00a21a9e\classes.dex" />
+    </item>
+
+</items>
