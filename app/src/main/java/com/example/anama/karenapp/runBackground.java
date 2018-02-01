@@ -37,18 +37,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class runBackground extends Service implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     List<Float> myList = new ArrayList<Float>();
+    List<Float> myListOriginal = new ArrayList<Float>();
+    List<String> timestampList = new ArrayList<String>();
 
     double lat = 0.0;
     double lng = 0.0;
 
-    private float ax = 0, ay = 0, az = 0, mAccelLast = 0, mAccelCurrent = 0, mAccel = 0, segSacudir = 0;
-    private int sacudir = 0, empujar = 0, caer = 0, aventar = 0;
+    private float ax = 0, ay = 0, az = 0, mAccelLast = 0, mAccelCurrent = 0, mAccel = 0, segAccion = 0, last = 0;
+    private int sacudir = 0, caer = 0, aventar_empujar = 0, flag = 0, printInfo = 0, count = 0;
+    private String accion = "";
     private long start;
 
     RequestQueue queue;
@@ -67,7 +71,7 @@ public class runBackground extends Service implements SensorEventListener {
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 
         queue = Volley.newRequestQueue(this);
 
@@ -108,68 +112,97 @@ public class runBackground extends Service implements SensorEventListener {
 
         long end = System.nanoTime();
         long time = (end - start) / 1000000;
-        //System.out.println(mAccel);
 
-        if(time > 10000) {
-            if (mAccelCurrent > mAccelLast) {
-                aventar = 0;
-                empujar = 0;
-                caer = 0;
+        if(segAccion > 0){
+            if(mAccel >= 17.0){
+                count += 1;
             }
-            if(sacudir >= 1){
-                myList.add(mAccel);
-            }
-            if ((time - segSacudir) > 3000 && sacudir >= 1) {
+            myList.add(mAccel);
+            myListOriginal.add(mAccel);
+/*            Float[] array = {(float)time,mAccel};
+            timestampList.add(Arrays.toString(array));*/
+            if ((time - segAccion) > 3000 ) {
                 Collections.sort(myList);
-                if (sacudir <= 1 && myList.get(0) <= -8) {
-
-                    Log.i("ACCION", "caer < 0 bien");
-                    //sms("Caer");
-                }
-                if (sacudir >= 4) {
-                    Log.i("ACCION", "sacudir bien");
-                    //sms("Sacudir");
-
-                }
-
-
                 DescriptiveStatistics da = new DescriptiveStatistics();
                 for(int i = 0; i<myList.size(); i++){
                     da.addValue(myList.get(i));
                 }
                 double iqr = da.getPercentile(75) - da.getPercentile(25);
-                System.out.println("List: "+myList);
+
+                if(iqr >= 6.73 ){
+                    accion = "Sacudir";
+                } else if(iqr >= 1.63 && iqr <= 3.91 && myListOriginal.get(0) >= 17.0 && count <= 1){
+                    accion = "Caer";
+                }
+
+                System.out.println("Accion: "+accion);
+                System.out.println("List: "+myListOriginal);
+                System.out.println("Sort List: "+myList);
                 System.out.println("75: "+da.getPercentile(75));
                 System.out.println("25: "+da.getPercentile(25));
                 System.out.println("iqr: "+iqr);
-                sacudir = 0;
-                segSacudir = 0;
+                System.out.println("datos: "+myList.size());
+                printInfo = 0;
+
+                count = sacudir = aventar_empujar = caer  = flag = 0;
+                segAccion = 0;
+                accion = "";
                 myList.clear();
-            }
-            if (mAccel > 65.0 && mAccelCurrent > mAccelLast) {
-                aventar += 1;
-                empujar += 1;
-                Log.i("ACCION", "aventar bien");
-                //sms("Aventar/Empujar");
-            } else if (mAccel >= 40.0 && mAccelCurrent > mAccelLast) {
-                empujar += 1;
-                aventar += 1;
-                //sms("Aventar/Empujar");
-                Log.i("ACCION", "empujar/aventar bien");
-            } else if (mAccel >= 25.0 && mAccelCurrent > mAccelLast) {
-                caer += 1;
-                sacudir = 0;
-                //sms("Caer");
-                Log.i("ACCION", "caer bien");
-            } else if ((mAccel >= 4.0 && mAccelCurrent > mAccelLast) || (mAccel <= -8.0 && mAccelCurrent < mAccelLast && aventar < 1 && caer < 1 && empujar < 1)) {
-                if (sacudir == 0) {
-                    segSacudir = time;
-                    myList.add(mAccel);
-
+                myListOriginal.clear();
+                da.clear();
+                stopService(new Intent(this, runBackground.class));
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                    startService(new Intent(this, runBackground.class));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                sacudir = sacudir + 1;
-
             }
+        } else {
+            if(mAccelCurrent < mAccelLast  && flag == 0) {
+                if (last <= -14.0 || last >= 15.0) {
+                    segAccion = time;
+                    //accion = "Sacudir";
+                    myList.add(last);
+                    myList.add(mAccel);
+                    myListOriginal.add(last);
+                    myListOriginal.add(mAccel);
+                    flag = 1;
+                    count += 1;
+/*                    Float[] array = {(float)time,last};
+                    timestampList.add(Arrays.toString(array));
+                    Float[] array2 = {(float)time,mAccel};
+                    timestampList.add(Arrays.toString(array2));*/
+                }
+/*                if (last > 40.0) {
+                    segAccion = time;
+                    accion = "Aventar/Empujar";
+                    myList.clear();
+                    myList.add(last);
+                    myList.add(mAccel);
+                    myListOriginal.add(last);
+                    myListOriginal.add(mAccel);
+                    flag = 1;
+                } else if (last >= 17.0) {
+                    segAccion = time;
+                    accion = "Caer";
+                    myList.clear();
+                    myList.add(last);
+                    myList.add(mAcmyListOriginalcel);
+                    .add(last);
+                    myListOriginal.add(mAccel);
+                    flag = 1;
+                } else if (last <= -14.0 || last >= 15.0) {
+                    segAccion = time;
+                    accion = "Sacudir";
+                    myList.add(last);
+                    myList.add(mAccel);
+                    myListOriginal.add(last);
+                    myListOriginal.add(mAccel);
+                    flag = 1;
+                }*/
+            }
+            last = mAccel;
         }
     }
 
